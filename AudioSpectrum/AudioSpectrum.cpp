@@ -37,7 +37,7 @@ AudioSpectrum::~AudioSpectrum() {
 	delete[] m_window;
 }
 
-void AudioSpectrum::update(const sf::Time& song_pos, const sf::SoundBuffer& buffer, const sf::Time& delta_time) {
+float AudioSpectrum::update(const sf::Time& song_pos, const sf::SoundBuffer& buffer, const sf::Time& delta_time) {
 	int offset = static_cast<int>(song_pos.asSeconds() * buffer.getSampleRate() * buffer.getChannelCount());
 
 	const sf::Int16* samples = buffer.getSamples();
@@ -47,20 +47,29 @@ void AudioSpectrum::update(const sf::Time& song_pos, const sf::SoundBuffer& buff
 
 	kiss_fft(config, (kiss_fft_cpx*)m_complex, (kiss_fft_cpx*)m_result);
 
+	float avg = 0.0f;
+	int av_count = 0;
 	for (int count = 0; count < m_va.getVertexCount() / 4; count++) {
-		float dB = std::abs(m_result[count]) / (90000.0f / scale);
+		float db = std::abs(m_result[count]) / (90000.0f / scale);
+
+		if (count >= 0 && count <= 20) {
+			avg += db;
+			av_count++;
+		}
 
 		std::size_t index = count * 4;
 		float va_y_pos = m_va[index + 1].position.y;
 
 		float m = -va_y_pos * delta_time.asSeconds() * 5.0f;
 
-		if (va_y_pos >= -dB) m_va[index + 1].position.y = m - dB;
+		if (va_y_pos >= -db) m_va[index + 1].position.y = m - db;
 		else if (va_y_pos > 0.0f) m_va[index + 1].position.y = 0.0f;
 		else m_va[index + 1].position.y += m;
 
 		m_va[index + 2].position.y = m_va[index + 1].position.y;
 	}
+
+	return avg / av_count;
 }
 
 sf::FloatRect AudioSpectrum::getLocalBounds() {

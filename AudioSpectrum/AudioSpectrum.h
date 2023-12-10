@@ -3,15 +3,17 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <kiss_fft.h>
+#include <kiss_fft/kiss_fft.h>
 #include <complex>
+
+#include "ParticleEffect.h"
 
 class AudioSpectrum : public sf::Transformable, public sf::Drawable {
 public:
 	AudioSpectrum(int bar_count);
-	~AudioSpectrum();
+	virtual ~AudioSpectrum();
 
-	void update(const sf::Time& song_pos, const sf::SoundBuffer& buffer, const sf::Time& delta_time);
+	float update(const sf::Time& song_pos, const sf::SoundBuffer& buffer, const sf::Time& delta_time);
 
 	sf::FloatRect getLocalBounds();
 	sf::FloatRect getGlobalBounds();

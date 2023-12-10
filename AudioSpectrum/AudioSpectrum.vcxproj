@@ -137,9 +137,11 @@
   <ItemGroup>
     <ClCompile Include="AudioSpectrum.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ParticleEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioSpectrum.h" />
+    <ClInclude Include="ParticleEffect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

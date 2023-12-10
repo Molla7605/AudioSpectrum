@@ -33,6 +33,9 @@ int main() {
 
 	st.setScale(1280.0f / st.getLocalBounds().getSize().x, 1.0f);
 
+	ParticleEffect pe(200, 1280, 10, 3, sf::Color(99, 171, 155));
+	pe.setPosition(0.0f, 720.0f);
+
 	sf::Clock tick_clock;
 	while (window.isOpen()) {
 		sf::Time delta_time = tick_clock.restart();
@@ -45,9 +48,11 @@ int main() {
 				sound.play();
 		}
 
-		st.update(sound.getPlayingOffset(), buffer, delta_time);
+		float avg = st.update(sound.getPlayingOffset(), buffer, delta_time);
+		pe.update(delta_time, avg / 30.0f);
 
 		window.clear();
+		window.draw(pe);
 		window.draw(st);
 		window.display();
 	}
